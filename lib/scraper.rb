@@ -13,8 +13,8 @@ class Scraper
     table.css("tr").each do |thing|
       thing.each do |item|
         if table_headers.include?(item)
-          current = item.text
-          hash[:current] = {}
+          current_head = item.text
+          hash[:current_head] = {}
         elsif table_small_titles.include?
           current_title = item.text
           hash[:current_head][:current_title] = []
