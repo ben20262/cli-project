@@ -15,14 +15,17 @@ class Scraper
       content = item.css("td")
 
       if content.text == "" && header != []
-        current_head = header.text
+        current_head = header.text.strip
         hash[:"#{current_head}"] = {}
       elsif content != [] && header != []
-        new_header = header.text
-        new_content = content.text
+        new_header = header.text.strip
+        new_content = content.text.strip
         hash[:"#{current_head}"][:"#{new_header}"] = new_content
       end
     end
     hash
+  end
+
+  def cleaner (hash)
   end
 end
