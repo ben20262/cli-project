@@ -1,30 +1,42 @@
+require 'open-uri'
+require 'nokogiri'
+require 'pry'
+
 
 class Scraper
 
   def self.scrape_page(page_url)
-    table = Nokogiri::HTML(open("page_url")).css("table.infobox")
-    table_headers = table.css("th:only-child")
-    table_small_titles = table.css("th:nth-last-child(2)")
-    table_content = table.css("td:nth-child(2)")
+    table = Nokogiri::HTML(open(page_url)).css("table.infobox")
+    # table_headers = table.css("th:only-child").text
+    # table_small_titles = table.css("th:nth-last-child(2)").text
+    # table_content = table.css("td:nth-child(2)").text
     hash = {}
     current_head = ""
-    current_title = ""
 
-    table.css("tr").each do |thing|
-      thing.each do |item|
-        if table_headers.include?(item)
-          current_head = item.text
-          hash[:current_head] = {}
-        elsif table_small_titles.include?
-          current_title = item.text
-          hash[:current_head][:current_title] = []
-        else
-          hash[:current_head][:current_title] << item.text
-        end
+    table.css("tr").each do |item|
+      header = item.css("th")
+      content = item.css("td")
+      binding.pry
+
+      if content != [] && header == []
+      elsif content == [] && header != []
+        current_head = header.text
+        hash[:current_head] = {}
+      elsif content != [] && header != []
+        header = header.text
+        content = content.text
+        hash[:current_head][:header] = content
       end
     end
     hash
   end
 
+  class PersonError < StandardError
+    @count = 0
 
+    def message
+      @count +=1
+      puts "#{@count} items unable to be parsed!"
+    end
+  end
 end
