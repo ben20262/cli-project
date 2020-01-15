@@ -17,5 +17,6 @@ class CommandLineInterface
         run
       end
     end
+    Person.all.first.show_hash
   end
 end
