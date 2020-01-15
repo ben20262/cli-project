@@ -4,6 +4,7 @@ require 'pry'
 
 
 class Scraper
+  attr_accessor :hash
 
   def self.scrape_page(page_url)
     table = Nokogiri::HTML(open(page_url)).css("table.infobox")
@@ -27,6 +28,35 @@ class Scraper
         end
       end
     end
-    hash
+    @hash = hash
+    self.cleaner
+    @hash
   end
+
+  def self.cleaner
+    name = @hash.keys.first
+    @hash.delete(name)
+    @hash = {name => @hash}
+    @hash.each_value do |att_value|
+      info = att_value[:""] if att_value.has_key? (:"")
+      if att_value.has_key?(:"General Information") && info != nil
+        att_value[:"General Information"] << info
+        att_value.delete(:"")
+      elsif info != nil
+        att_value[:"General Information"] = info
+        att_value.delete(:"")
+      end
+      att_value.each_value do |nest_value|
+        nest_info = nest_value[:""].join("/n") if nest_value.has_key? (:"")
+        if nest_value.has_key?(:"General") && nest_info != nil
+          nest_value[:"General"] << nest_info.split("/n")
+          nest_value.delete(:"")
+        elsif nest_info != nil
+          nest_value[:"General"] = nest_info.split("/n")
+          nest_value.delete(:"")
+        end
+      end
+    end
+  end
+
 end
