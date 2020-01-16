@@ -7,14 +7,13 @@ class Scraper
   attr_accessor :hash
 
   def self.scrape_page(page_url)
-    table = Nokogiri::HTML(open(page_url)).css("table.infobox")
+    table = Nokogiri::HTML(open(page_url)).css("table.infobox") #here
     hash = {}
     current_head = ""
 
     table.css("tr").each do |item|
       header = item.css("th")
       content = item.css("td")
-
       if content.text == "" && header != []
         current_head = header.text.strip
         hash[:"#{current_head}"] = {}
@@ -47,16 +46,16 @@ class Scraper
       att_value.delete(:"")
     end
     att_value.each_value do |nest_value|
-      nest_info = nest_value[:""].join("/n") if nest_value.has_key? (:"")
+      nest_info = nest_value[:""].join(" ") if nest_value.has_key? (:"")
       if nest_value.has_key?(:"General") && nest_info != nil
-        nest_value[:"General"] << nest_info.split("/n")
+        nest_value[:"General"] << nest_info
+        nest_value[:"General"].flatten
         nest_value.delete(:"")
       elsif nest_info != nil
-        nest_value[:"General"] = nest_info.split("/n")
+        nest_value[:"General"] = [nest_info]
         nest_value.delete(:"")
       end
     end
-    @hash[att_key].delete if att_value == {}
   end
 
 end
