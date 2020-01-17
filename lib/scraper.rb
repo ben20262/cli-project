@@ -45,6 +45,7 @@ class Scraper
       att_value[:"General Information"] = info
       att_value.delete(:"")
     end
+    att_value.delete_if {|key, value| value == {}}
     att_value.each_value do |nest_value|
       nest_info = nest_value[:""].join(" ") if nest_value.has_key? (:"")
       if nest_value.has_key?(:"General") && nest_info != nil
@@ -54,6 +55,14 @@ class Scraper
       elsif nest_info != nil
         nest_value[:"General"] = [nest_info]
         nest_value.delete(:"")
+      end
+      nest_value.values.flatten.each do |item| #here
+        item.delete("/n")
+      end
+    end
+    att_value.each_key do |key|
+      att_value.each_value do |value|
+        value.delete(key)
       end
     end
   end
