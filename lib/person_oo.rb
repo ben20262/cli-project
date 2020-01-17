@@ -1,4 +1,5 @@
 require 'pry'
+#hi me!
 
 class Person
   @@all = []
