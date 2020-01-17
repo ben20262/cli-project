@@ -12,49 +12,54 @@ class CommandLineInterface
         hash = Scraper.scrape_page(url)
         name = hash.keys.first.to_s
         name = Person.new(hash)
+        pp hash
       else
         puts "#{url} was not a valid entry. Please remove or fix this entry."
         run
       end
     end
-    # info
+
   end
 
   def info
     puts "What would you like to do?"
     count = 1
-    people = Person.all
-    people.each do |person|
-      name = person.hash.keys[0].to_s
+    Person.all.each do |person|
+      name = person.instance_variables[1].to_s.delete("@").split("_").join(" ").capitalize
       puts "To view information on #{name} enter #{count}."
       count += 1
     end
-    puts "To compare all persons enter 3."
+    # puts "To compare all persons enter 3."
     input = gets.strip.to_i - 1
     if input < 0 || input >= count
       puts "This is not a valid selection."
       info
-    elsif input == count - 1
-      compare
-      return
+    # elsif input == count - 1
+    #   compare
+    #   return
     else
-      person = people[input]
-      person_hash = person.hash
-      name = person_hash.keys.first
+      person = Person.all[input]
+      name = person.instance_variables[1].to_s.delete("@").split("_").join(" ").capitalize
     end
-    count = 1
-    person_hash[name].each_key do |key|
-      puts "To view information on #{name}'s #{key} press #{count}."
-      count += 1
+
+    person.att_array.each do |att|
+      count = 0
+      att.instance_variables.each do |att_title|
+        if count > 0
+          att_name = att_title.to_s.split("_").join(" ").delete("@").capitalize
+          puts "To view information on #{name}'s #{att_name} press #{count}."
+        end
+        count += 1
+      end
     end
-    puts "To view all information on #{name} please enter #{count}."
-    input = gets.strip.to_i - 1
-    if input < 0 || input >= count
+    # puts "To view all information on #{name} please enter #{count}."
+    input = gets.strip.to_i
+    if input < 1 || input >= count
       puts "This is not a valid selection."
       info
-    elsif input == count - 1
-      person.show_hash
-      return
+    # elsif input == count - 1
+    #   person.show_hash
+    #   return
     else
       key = person_hash[name].keys[input]
       person_fact = person_hash[name][key]
@@ -65,8 +70,8 @@ class CommandLineInterface
       puts "To view information on #{name}'s #{key} press #{count}"
       count += 1
     end
-    input = gets.strip.to_i - 1
-    if input < 0 || input >= count
+    input = gets.strip.to_i
+    if input < 1 || input >= count
       puts "This is not a valid selection."
       info
     else
@@ -82,7 +87,7 @@ class CommandLineInterface
     else
       puts "Enter the number of the tag you like to compare."
       mutual.each_index {|index| puts "#{index + 1} #{mutual[index]}"}
-      input = gets.strip.to_i - 1
+      input = gets.strip.to_i
       if mutual.size > input
         mutual_key = mutual[input]
         Person.all.each do |person|
