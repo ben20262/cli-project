@@ -29,10 +29,14 @@ class CommandLineInterface
       puts "To view information on #{name} enter #{count}."
       count += 1
     end
+    puts "To compare all persons enter 3."
     input = gets.strip.to_i - 1
     if input < 0 || input >= count
       puts "This is not a valid selection."
       info
+    elsif input == count - 1
+      compare
+      return
     else
       person = people[input]
       person_hash = person.hash
@@ -56,7 +60,6 @@ class CommandLineInterface
       person_fact = person_hash[name][key]
     end
     count = 1
-    binding.pry
     keys = person_fact.keys
     keys.each do |key|
       puts "To view information on #{name}'s #{key} press #{count}"
@@ -72,4 +75,30 @@ class CommandLineInterface
     end
   end
 
+  def compare
+    mutual = Person.mutual
+    if mutual.size == 0
+      puts "There are no mutual tags."
+    else
+      puts "Enter the number of the tag you like to compare."
+      mutual.each_index {|index| puts "#{index + 1} #{mutual[index]}"}
+      input = gets.strip.to_i - 1
+      if mutual.size > input
+        mutual_key = mutual[input]
+        Person.all.each do |person|
+          m_value = ""
+          p_name = person.hash.keys.first.to_s
+          person.hash.values.first.each_value do |value|
+            if value.has_key?(mutual_key)
+              m_value = value[mutual_key][0]
+            end
+          end
+          puts "#{p_name}'s #{mutual_key} is #{m_value}"
+        end
+      else
+        "That is not a valid entry"
+      end
+    end
+
+  end
 end
