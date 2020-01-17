@@ -57,7 +57,7 @@ class Scraper
         nest_value.delete(:"")
       end
       nest_value.values.flatten.each do |item| #here
-        item.delete("/n")
+        item.gsub!(/\n/, " ")
       end
     end
     att_value.each_key do |key|
