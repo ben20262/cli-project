@@ -17,7 +17,7 @@ class CommandLineInterface
         run
       end
     end
-    info
+    # info
   end
 
   def info
