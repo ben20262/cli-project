@@ -1,14 +1,15 @@
 require 'pry'
 
 class Person
-  attr_accessor :att_array
+  attr_accessor :att_array, :name
   @@all = []
 
   def initialize (hash)
     @att_array = []
-    hash.each do |name, value|
-      name = name.to_s.downcase.split(" ").join("_")
-      @att_array << instance_variable_set(name.to_s.prepend("@"), Attribute.new(value, self))
+    @name = hash.keys.first
+    hash.values.first.each do |name, value|
+      name = name.to_s.downcase.split(" ").join("_").prepend("@")
+      @att_array << instance_variable_set(name, Attribute.new(name, value, self))
     end
     @@all << self
   end
@@ -18,14 +19,15 @@ class Person
   end
 
   class Attribute
-    attr_reader :owner, :fact_array
+    attr_reader :owner, :fact_array, :att_name
     @@att_all = []
 
-    def initialize (nest_hash, owner)
+    def initialize (att_name, nest_hash, owner)
       @fact_array = []
+      @att_name = att_name
       nest_hash.each do |name, value|
         name = name.to_s.downcase.split(" ").join("_")
-        @fact_array << instance_variable_set(name.to_s.prepend("@"), Fact.new(value, self))
+        @fact_array << instance_variable_set(name.to_s.prepend("@"), value)
       end
       @owner = owner
       @@att_all << self
@@ -35,22 +37,8 @@ class Person
       @@att_all
     end
 
-    class Fact
-      attr_reader :att_owner
-      @@fact_all = []
-
-      def initialize (ol_nestie, att_owner)
-        ol_nestie.each do |name, value|
-          name = name.to_s.downcase.split(" ").join("_")
-          instance_variable_set(name.to_s.prepend("@"), value)
-        end
-        @att_owner = att_owner
-        @@fact_all << self
-      end
-
-      def self.all
-        @@fact_all
-      end
+    def self.owner (person)
+      @@att_all.select {|att| att.owner == person}
     end
   end
 end

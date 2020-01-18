@@ -22,11 +22,11 @@ class CommandLineInterface
 
   def info
     puts "What would you like to do?"
-    count = 1
+    count = 0
     Person.all.each do |person|
-      name = person.instance_variables[1].to_s.delete("@").split("_").join(" ").capitalize
-      puts "To view information on #{name} enter #{count}."
       count += 1
+      name = person.name
+      puts "To view information on #{name} enter #{count}."
     end
     # puts "To compare all persons enter 3."
     input = gets.strip.to_i - 1
@@ -38,30 +38,25 @@ class CommandLineInterface
     #   return
     else
       person = Person.all[input]
-      name = person.instance_variables[1].to_s.delete("@").split("_").join(" ").capitalize
+      name = person.name
     end
-    att_collection = []
-    person.att_array.each do |att|
-      count = 0
-      att.instance_variables.each do |att_title|
-        att_array << att_title
-        if count > 0 && att_title != :@owner
-          att_name = att_title.to_s.split("_").join(" ").delete("@").capitalize
-          puts "To view information on #{name}'s #{att_name} press #{count}."
-        end
-        count += 1
-      end
+    count = 0
+    person_att = Person::Attribute.owner(person)
+    person_att.each do |att|
+      count += 1
+      clean_name = att.att_name.to_s.split("_").join(" ").delete("@").capitalize
+      puts "To view information on #{name}'s #{clean_name} press #{count}."
     end
     # puts "To view all information on #{name} please enter #{count}."
-    input = gets.strip.to_i
-    if input < 1 || input >= count
+    input = gets.strip.to_i - 1
+    if input < 0 || input >= count
       puts "This is not a valid selection."
       info
     # elsif input == count - 1
     #   person.show_hash
     #   return
     else
-      choice = att_array[input]
+      choice = person_att[input]
     end
     count = 1
     fact_collection = []
