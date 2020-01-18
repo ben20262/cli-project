@@ -58,24 +58,19 @@ class CommandLineInterface
     else
       choice = person_att[input]
     end
-    count = 1
-    fact_collection = []
+    count = 0
     choice.fact_array.each do |fact|
-      fact.instance_variables.each do |fact_title|
-        if fact_title != :@att_owner
-          fact_collection << fact_title
-          puts "To view information on #{name}'s #{fact_clean} press #{count}"
-          count += 1
-        end
-      end
+      count += 1
+      fact_clean = fact.to_s.split("_").join(" ").delete("@").capitalize
+      puts "To view information on #{name}'s #{fact_clean} press #{count}"
     end
     input = gets.strip.to_i - 1
-    if input < 1 || input >= count
+    if input < 0 || input >= count
       puts "This is not a valid selection."
       info
     else
-      key = keys[input]
-      puts person_fact[key]
+      fact_key = choice.fact_array[input]
+      puts choice.instance_variable_get(fact_key)
     end
   end
 

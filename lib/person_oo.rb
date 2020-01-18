@@ -26,8 +26,9 @@ class Person
       @fact_array = []
       @att_name = att_name
       nest_hash.each do |name, value|
-        name = name.to_s.downcase.split(" ").join("_")
-        @fact_array << instance_variable_set(name.to_s.prepend("@"), value)
+        name = name.to_s.downcase.split(" ").join("_").prepend("@")
+        instance_variable_set(name, value)
+        @fact_array << name
       end
       @owner = owner
       @@att_all << self
