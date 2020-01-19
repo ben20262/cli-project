@@ -9,6 +9,9 @@ Built with Ruby
 Author
 Ben Small initial work
 
+Contributing
+If you'd like to contribute open up a pull request and let me know I'd love to have the input.
+
 License
 This project is licensed under the MIT license.
 https://opensource.org/licenses/MIT
