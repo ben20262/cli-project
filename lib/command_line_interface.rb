@@ -10,6 +10,7 @@ class CommandLineInterface
       puts "Please enter a url"
       run
     elsif input == "exit"
+      return
     end
     array.each do |url|
       if url.include?("wikipedia.org")
