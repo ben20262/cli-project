@@ -40,6 +40,18 @@ class Person
     array
   end
 
+  def show_all
+    @att_array.each do |att|
+      puts att.att_name.delete("@").split("_").join(" ").capitalize
+      att.fact_array.each do |fact|
+        fact_value = att.instance_variable_get(fact).join(" ")
+        fact_key = fact.delete("@").split("_").join(" ").capitalize
+        puts "  #{fact_key}"
+        puts "    #{fact_value}"
+      end
+    end
+  end
+
 
   class Attribute
     attr_reader :owner, :fact_array, :att_name
