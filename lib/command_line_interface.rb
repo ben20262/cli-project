@@ -12,6 +12,7 @@ class CommandLineInterface
         hash = Scraper.scrape_page(url)
         name = hash.keys.first.to_s
         name = Person.new(hash)
+
       else
         puts "#{url} was not a valid entry. Please remove or fix this entry."
         run
@@ -28,14 +29,14 @@ class CommandLineInterface
       name = person.name
       puts "To view information on #{name} enter #{count}."
     end
-    # puts "To compare all persons enter 3."
+    puts "To compare all persons enter 3."
     input = gets.strip.to_i - 1
-    if input < 0 || input >= count
+    if input < 0 || input > count
       puts "This is not a valid selection."
       info
-    # elsif input == count - 1
-    #   compare
-    #   return
+    elsif input == count
+      compare
+      return
     else
       person = Person.all[input]
       name = person.name
@@ -47,14 +48,14 @@ class CommandLineInterface
       clean_name = att.att_name.to_s.split("_").join(" ").delete("@").capitalize
       puts "To view information on #{name}'s #{clean_name} press #{count}."
     end
-    # puts "To view all information on #{name} please enter #{count}."
+    puts "To view all information on #{name} please enter #{count}."
     input = gets.strip.to_i - 1
     if input < 0 || input >= count
       puts "This is not a valid selection."
       info
-    # elsif input == count - 1
-    #   person.show_hash
-    #   return
+    elsif input == count - 1
+      person.show_all
+      return
     else
       choice = person_att[input]
     end
@@ -81,15 +82,15 @@ class CommandLineInterface
     else
       puts "Enter the number of the tag you like to compare."
       mutual.each_index {|index| puts "#{index + 1} #{mutual[index]}"}
-      input = gets.strip.to_i
+      input = gets.strip.to_i - 1
       if mutual.size > input
         mutual_key = mutual[input]
         Person.all.each do |person|
           m_value = ""
-          p_name = person.hash.keys.first.to_s
-          person.hash.values.first.each_value do |value|
-            if value.has_key?(mutual_key)
-              m_value = value[mutual_key][0]
+          p_name = person.name
+          person.att_array.each do |value|
+            if value.instance_variables.include? (mutual_key)
+              m_value = value.instance_variable_get(mutual_key)
             end
           end
           puts "#{p_name}'s #{mutual_key} is #{m_value}"
