@@ -1,27 +1,25 @@
-require 'pry'
-
 class Person
   attr_accessor :att_array, :name
   @@all = []
 
 
-  def initialize (hash)
+  def initialize (hash) # accepts the hash as an argument and creates variables with the keys and values
     @att_array = []
     @name = hash.keys.first
     hash.values.first.each do |name, value|
       name = name.to_s.downcase.split(" ")
       name.delete_if {|word| word.to_i != 0}
       name = name.join("_").gsub(/[^a-z_]/, '').prepend("@")
-      @att_array << instance_variable_set(name, Attribute.new(name, value, self))
+      @att_array << instance_variable_set(name, Attribute.new(name, value, self)) # passes the vaiables to the attribute sub-class for further saving and remembers the attributes saved
     end
     @@all << self
   end
 
-  def self.all
+  def self.all # returns all persons
     @@all
   end
 
-  def self.mutual
+  def self.mutual # returns an array of mutual attribute variable names between persons
     array = []
     count = 1
     @@all.each do |person|
@@ -40,7 +38,7 @@ class Person
     array
   end
 
-  def show_all
+  def show_all # puts the entirity of a persons values to display all scraped information
     @att_array.each do |att|
       puts att.att_name.delete("@").split("_").join(" ").capitalize
       att.fact_array.each do |fact|
@@ -53,7 +51,7 @@ class Person
   end
 
 
-  class Attribute
+  class Attribute # sub-class for saving the lower keys and values of the hash passed to person
     attr_reader :owner, :fact_array, :att_name
     @@att_all = []
 
@@ -64,14 +62,14 @@ class Person
         name = name.to_s.downcase.split(" ")
         name.delete_if {|word| word.to_i != 0}
         name = name.join("_").gsub(/[^a-z_]/, '').prepend("@")
-        instance_variable_set(name, value)
-        @fact_array << name
+        instance_variable_set(name, value) # sets a variable for the lowest level of the data
+        @fact_array << name # saves the names for easy use
       end
       @owner = owner
       @@att_all << self
     end
 
-    def self.all
+    def self.all # returns all instances of attributes
       @@att_all
     end
 
