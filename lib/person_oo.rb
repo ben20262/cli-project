@@ -1,3 +1,4 @@
+require 'pry'
 class Person
   attr_accessor :att_array, :name
   @@all = []
@@ -35,7 +36,8 @@ class Person
         array.flatten!.keep_if {|key| brray.include?(key) || brray.include?(:"#{key}s")}
       end
     end
-    array
+    array.delete("@general")
+    array.uniq
   end
 
   def show_all # puts the entirity of a persons values to display all scraped information
