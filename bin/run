@@ -1,5 +1,5 @@
-require_relative "../lib/command_line_interface.rb"
-require_relative "../lib/person_oo.rb"
-require_relative "../lib/scraper.rb"
+#!/usr/local/bin/ruby
+
+require_relative 'config/environment.rb'
 
 CommandLineInterface.new.run

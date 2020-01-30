@@ -1,4 +1,3 @@
-require 'pry'
 class Person
   attr_accessor :att_array, :name
   @@all = []
